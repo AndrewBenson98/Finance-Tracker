@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
      * Catches all other unexpected exceptions that haven't been handled specifically.
      * These should be logged for debugging purposes.
      */
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGlobalException(
             Exception ex,
             WebRequest request) {

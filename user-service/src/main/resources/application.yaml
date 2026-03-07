@@ -24,7 +24,10 @@ spring:
         trace: false
         web-allow-others: false
 
-
+  security:
+    user:
+      name: admin
+      password: admin
 #springdoc:
 #  swagger-ui:
 #    path: /swagger-ui.html

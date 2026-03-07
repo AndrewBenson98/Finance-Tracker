@@ -13,20 +13,22 @@ import com.benson.user_service.models.dto.response.UserDTO;
 import com.benson.user_service.repository.UserRepository;
 import com.benson.user_service.utils.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(@Autowired UserRepository userRepository, @Autowired UserMapper userMapper) {
+    public UserServiceImpl(@Autowired UserRepository userRepository, @Autowired UserMapper userMapper, @Autowired PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /**
@@ -38,13 +40,20 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserDTO createUser(UserCreateDTO userCreateDTO) throws UserAlreadyExistsException {
 
-        String username = userCreateDTO.username(); // Check before mapping to save resources
-
-        userRepository.findByUsername(username).ifPresent(u -> {
-            throw new UserAlreadyExistsException("Username " + username + " is taken");
+        userRepository.findByUsername(userCreateDTO.username() ).ifPresent(u -> {
+            throw new UserAlreadyExistsException("Username " + userCreateDTO.username() + " is taken");
         });
 
-        User savedUser = userRepository.save(userMapper.toEntity(userCreateDTO));
+        //Map to entity
+        User user = userMapper.toEntity(userCreateDTO);
+
+        // Hash the password before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        //Save entity to database
+        User savedUser = userRepository.save(user);
+
+        // Map saved entity to DTO and return
         return userMapper.toDto(savedUser);
     }
 
@@ -85,7 +94,24 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public UserDTO updateUserPassword(String username, UpdatePasswordDTO updatePasswordDTO) throws InvalidPasswordException {
-        return null;
+
+        //check that user exists
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
+
+        //Hash the existing password and compare with the provided current password
+        if (!passwordEncoder.matches(updatePasswordDTO.existingPassword(), user.getPassword())) {
+            throw new InvalidPasswordException("Existing password is incorrect");
+        }
+
+        //Hash the new password and update the user entity
+        user.setPassword(passwordEncoder.encode(updatePasswordDTO.newPassword()));
+
+        //Save the updated user entity to the database
+        User updatedUser = userRepository.save(user);
+
+        // Map the updated user entity to a UserDTO and return
+        return userMapper.toDto(updatedUser);
+
     }
 
     /**
@@ -97,7 +123,17 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public UserDTO updateUserEmail(String username, UpdateEmailDTO updateEmailDTO) throws UserNotFoundException {
-        return null;
+
+        //check that user exists
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
+
+        // Update the user's email and save the updated user entity to the database
+        user.setEmail(updateEmailDTO.newEmail());
+        User updatedUser = userRepository.save(user);
+
+        // Map the updated user entity to a UserDTO and return
+        return userMapper.toDto(updatedUser);
+
     }
 
     /**
@@ -110,7 +146,22 @@ public class UserServiceImpl implements UserService{
      */
     @Override
     public UserDTO updateUsername(String existingUsername, UpdateUsernameDTO updateUsernameDTO) throws UserNotFoundException, UsernameAlreadyExistsException {
-        return null;
+
+        //check that user exists
+        User user = userRepository.findByUsername(existingUsername).orElseThrow(() -> new UserNotFoundException("User with username " + existingUsername + " not found"));
+
+        //check that new username is not taken
+        userRepository.findByUsername(updateUsernameDTO.newUsername()).ifPresent(u -> {
+            throw new UsernameAlreadyExistsException("Username " + updateUsernameDTO.newUsername() + " is taken");
+        });
+
+        //Update the user's username and save the updated user entity to the database
+        user.setUsername(updateUsernameDTO.newUsername());
+        User updatedUser = userRepository.save(user);
+
+        // Map the updated user entity to a UserDTO and return
+        return userMapper.toDto(updatedUser);
+
     }
 
     /**
