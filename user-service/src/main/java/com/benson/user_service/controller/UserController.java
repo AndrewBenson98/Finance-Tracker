@@ -33,14 +33,12 @@ public class UserController {
 
     }
 
-
     @GetMapping("/users")
     public ResponseEntity<List<UserDTO>> getUsers() {
 
         return ResponseEntity.ok(userService.getAllUsers());
 
     }
-
 
     @GetMapping("/users/{username}")
     public ResponseEntity<UserDTO> getUserByUsername(@RequestParam String username) {
