@@ -25,4 +25,6 @@ public interface UserService {
 
     void deleteUser(String username) throws UserNotFoundException;
 
+    UserDTO authenticateUser(UserLoginDTO userLoginDTO) throws UserNotFoundException, InvalidPasswordException;
+
 }

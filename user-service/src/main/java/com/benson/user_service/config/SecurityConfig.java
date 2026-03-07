@@ -21,7 +21,7 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll() // Allow access to H2 console without authentication
                         .anyRequest().permitAll() // This opens all your endpoints
                 )
-                
+
                 //Allows for h2 console UI
                 .headers(headers -> headers
                         .frameOptions(frame -> frame.sameOrigin())

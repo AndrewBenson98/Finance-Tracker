@@ -5,10 +5,7 @@ import com.benson.user_service.exceptions.UserAlreadyExistsException;
 import com.benson.user_service.exceptions.UserNotFoundException;
 import com.benson.user_service.exceptions.UsernameAlreadyExistsException;
 import com.benson.user_service.models.User;
-import com.benson.user_service.models.dto.request.UpdateEmailDTO;
-import com.benson.user_service.models.dto.request.UpdatePasswordDTO;
-import com.benson.user_service.models.dto.request.UpdateUsernameDTO;
-import com.benson.user_service.models.dto.request.UserCreateDTO;
+import com.benson.user_service.models.dto.request.*;
 import com.benson.user_service.models.dto.response.UserDTO;
 import com.benson.user_service.repository.UserRepository;
 import com.benson.user_service.utils.UserMapper;
@@ -173,6 +170,22 @@ public class UserServiceImpl implements UserService{
     public void deleteUser(String username) throws UserNotFoundException {
         User user = userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("User with username " + username + " not found"));
         userRepository.delete(user);
+    }
+
+    @Override
+    public UserDTO authenticateUser(UserLoginDTO userLoginDTO) throws UserNotFoundException, InvalidPasswordException {
+
+        //Check that user exists
+        User user = userRepository.findByUsername(userLoginDTO.username()).orElseThrow(() -> new UserNotFoundException("User with username " + userLoginDTO.username() + " not found"));
+
+        //Check that provided password matches the stored hashed password
+        if (!passwordEncoder.matches(userLoginDTO.password(), user.getPassword())) {
+            throw new InvalidPasswordException("Invalid Username or Password");
+        }
+
+        // If authentication is successful, return the user details as a UserDTO
+        return userMapper.toDto(user);
+
     }
 
 }

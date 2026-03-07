@@ -1,9 +1,6 @@
 package com.benson.user_service.controller;
 
-import com.benson.user_service.models.dto.request.UpdateEmailDTO;
-import com.benson.user_service.models.dto.request.UpdatePasswordDTO;
-import com.benson.user_service.models.dto.request.UpdateUsernameDTO;
-import com.benson.user_service.models.dto.request.UserCreateDTO;
+import com.benson.user_service.models.dto.request.*;
 import com.benson.user_service.models.dto.response.UserDTO;
 import com.benson.user_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +62,11 @@ public class UserController {
     @PutMapping("/users/{username}/update-password")
     public ResponseEntity<UserDTO> updateUserPassword(@RequestParam String username, @RequestBody UpdatePasswordDTO updatePasswordDTO) {
         return ResponseEntity.ok(userService.updateUserPassword(username, updatePasswordDTO));
+    }
+
+    @PostMapping("/users/authenticate")
+    public ResponseEntity<UserDTO> authenticateUser(@RequestBody UserLoginDTO userLoginDTO) {
+        return ResponseEntity.ok(userService.authenticateUser(userLoginDTO));
     }
 
 
