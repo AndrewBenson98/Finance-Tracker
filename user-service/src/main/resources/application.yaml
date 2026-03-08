@@ -32,3 +32,12 @@ spring:
 #  swagger-ui:
 #    path: /swagger-ui.html
 #    api-docs: /v3/api-docs
+
+server:
+  port: 8081
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka/
+    register-with-eureka: true
