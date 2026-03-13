@@ -15,6 +15,8 @@ public interface UserService {
 
     UserDTO getUserByUsername(String username) throws UserNotFoundException;
 
+    UserDTO getUserById(Long id) throws UserNotFoundException;
+
     List<UserDTO> getAllUsers();
 
     UserDTO updateUserPassword(String username, UpdatePasswordDTO updatePasswordDTO) throws InvalidPasswordException;

@@ -42,6 +42,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserByUsername(username));
     }
 
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserDTO> getUserById(@RequestParam Long id) {
+        return ResponseEntity.ok(userService.getUserById(id));
+    }
+
     @DeleteMapping("/users/{username}")
     public ResponseEntity<UserDTO> deleteUserByUsername(@RequestParam String username) {
         userService.deleteUser(username);

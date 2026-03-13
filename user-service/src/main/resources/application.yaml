@@ -28,10 +28,6 @@ spring:
     user:
       name: admin
       password: admin
-#springdoc:
-#  swagger-ui:
-#    path: /swagger-ui.html
-#    api-docs: /v3/api-docs
 
 server:
   port: 8081
