@@ -1,0 +1,31 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://${KEYCLOAK_HOST:localhost}:9090/realms/my-realm/protocol/openid-connect/certs
+          issuer-uri: http://${KEYCLOAK_HOST:localhost}:9090/realms/my-realm
+
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          routes:
+            - id: todo_route
+              uri: lb://todo-service
+              predicates:
+                - Path=/api/v1/users/**
+                - Path=/api/v1/transactions/**
+          default-filters:
+            - AddRequsetHeader=X-Correlation-Id, #{T(java.util.UUID).randomUUID()}
+            - TokenRelay= keycloak
+eureka:
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka/
+    # The gateway usually doesn't need to be found by others,
+    # but it MUST "fetch" the registry to find your API services.
+    fetch-registry: true
+    register-with-eureka: true

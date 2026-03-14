@@ -53,22 +53,22 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+//Disabling Update endpoints for now
+//    @PutMapping("/users/{existingUsername}/update-username")
+//    public ResponseEntity<UserDTO> updateUsername(@RequestParam String existingUsername, @RequestBody UpdateUsernameDTO updateUsernameDTO) {
+//        return ResponseEntity.ok(userService.updateUsername(existingUsername, updateUsernameDTO));
+//    }
 
-    @PutMapping("/users/{existingUsername}/update-username")
-    public ResponseEntity<UserDTO> updateUsername(@RequestParam String existingUsername, @RequestBody UpdateUsernameDTO updateUsernameDTO) {
-        return ResponseEntity.ok(userService.updateUsername(existingUsername, updateUsernameDTO));
-    }
-
-    @PutMapping("/users/{username}/update-email")
-    public ResponseEntity<UserDTO> updateUserEmail(@RequestParam String username, @RequestBody UpdateEmailDTO updateEmailDTO) {
-        return ResponseEntity.ok(userService.updateUserEmail(username, updateEmailDTO));
-    }
-
-    @PutMapping("/users/{username}/update-password")
-    public ResponseEntity<UserDTO> updateUserPassword(@RequestParam String username, @RequestBody UpdatePasswordDTO updatePasswordDTO) {
-        return ResponseEntity.ok(userService.updateUserPassword(username, updatePasswordDTO));
-    }
-
+//    @PutMapping("/users/{username}/update-email")
+//    public ResponseEntity<UserDTO> updateUserEmail(@RequestParam String username, @RequestBody UpdateEmailDTO updateEmailDTO) {
+//        return ResponseEntity.ok(userService.updateUserEmail(username, updateEmailDTO));
+//    }
+//
+//    @PutMapping("/users/{username}/update-password")
+//    public ResponseEntity<UserDTO> updateUserPassword(@RequestParam String username, @RequestBody UpdatePasswordDTO updatePasswordDTO) {
+//        return ResponseEntity.ok(userService.updateUserPassword(username, updatePasswordDTO));
+//    }
+//
     @PostMapping("/users/authenticate")
     public ResponseEntity<UserDTO> authenticateUser(@RequestBody UserLoginDTO userLoginDTO) {
         return ResponseEntity.ok(userService.authenticateUser(userLoginDTO));

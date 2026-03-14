@@ -1,0 +1,82 @@
+services:
+  # The Eureka Registry
+  eureka-server:
+    build: ./eureka-server  # Path to your Eureka Dockerfile
+    container_name: eureka-server-finance-app
+    ports:
+      - "8761:8761"
+    networks:
+      - microservices-net
+
+  # The Todo/API Service
+  user-service:
+    build: ./user-service   # Path to your Todo Dockerfile
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    environment:
+      - EUREKA_HOST=eureka-server      # Use the service name as the hostname
+      - SERVER_PORT=8081
+    depends_on:
+      - eureka-server                  # Ensures Eureka starts first
+    networks:
+      - microservices-net
+
+  transaction-service:
+    build: ./transaction-service   # Path to your Todo Dockerfile
+    container_name: transaction-service
+    ports:
+      - "8082:8082"
+    environment:
+      - EUREKA_HOST=eureka-server      # Use the service name as the hostname
+      - SERVER_PORT=8082
+    depends_on:
+      - eureka-server                  # Ensures Eureka starts first
+    networks:
+      - microservices-net
+
+  
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest 
+    container_name: keycloak-finance-app
+    command: start-dev --http-port 9090
+    ports:
+      - "9090:9090"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HOSTNAME_STRICT=false        
+      - KC_HOSTNAME_STRICT_HTTPS=false  
+      - KC_HTTP_ENABLED=true
+      - KC_HTTP_PORT=9090
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    networks:
+      - microservices-net
+
+  api-gateway:
+    build: ./api-gateway 
+    container_name: api-gateway-finance-app
+    ports:
+      - "8080:8080"
+    environment:
+      - EUREKA_HOST=eureka-server     
+      - KEYCLOAK_HOST=keycloak
+      - SERVER_PORT=8080
+    depends_on:
+      - eureka-server
+      - keycloak             
+    networks:
+      - microservices-net
+    
+  
+
+# Define the shared network and volume
+networks:
+  microservices-net:
+    driver: bridge
+
+# volumes:
+#   todo-data:
+volumes:
+  keycloak_data:
