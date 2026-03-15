@@ -1,37 +1,36 @@
 services:
   # The Eureka Registry
   eureka-server:
-    build: ./eureka-server  # Path to your Eureka Dockerfile
+    build: ./eureka-server  
     container_name: eureka-server-finance-app
     ports:
       - "8761:8761"
     networks:
       - microservices-net
 
-  # The Todo/API Service
   user-service:
-    build: ./user-service   # Path to your Todo Dockerfile
+    build: ./user-service   
     container_name: user-service
     ports:
       - "8081:8081"
     environment:
-      - EUREKA_HOST=eureka-server      # Use the service name as the hostname
+      - EUREKA_HOST=eureka-server      
       - SERVER_PORT=8081
     depends_on:
-      - eureka-server                  # Ensures Eureka starts first
+      - eureka-server                  
     networks:
       - microservices-net
 
   transaction-service:
-    build: ./transaction-service   # Path to your Todo Dockerfile
+    build: ./transaction-service   
     container_name: transaction-service
     ports:
       - "8082:8082"
     environment:
-      - EUREKA_HOST=eureka-server      # Use the service name as the hostname
+      - EUREKA_HOST=eureka-server      
       - SERVER_PORT=8082
     depends_on:
-      - eureka-server                  # Ensures Eureka starts first
+      - eureka-server                  
     networks:
       - microservices-net
 
