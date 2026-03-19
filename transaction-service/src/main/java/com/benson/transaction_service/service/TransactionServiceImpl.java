@@ -1,5 +1,7 @@
 package com.benson.transaction_service.service;
 
+import com.benson.transaction_service.exceptions.TransactionNotFoundException;
+import com.benson.transaction_service.exceptions.UserNotFoundException;
 import com.benson.transaction_service.models.Transaction;
 import com.benson.transaction_service.models.dto.request.CreateTransactionDTO;
 import com.benson.transaction_service.models.dto.response.TransactionDTO;
@@ -42,8 +44,16 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionDTO> getTransactionsByUserId(Long userId) {
-        List<Transaction> transactions = transactionRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("No transactions found for user with id " + userId));
+    public List<TransactionDTO> getTransactionsByUserId(Long userId) throws TransactionNotFoundException {
+        List<Transaction> transactions = transactionRepository.findByUserId(userId).orElseThrow(() -> new TransactionNotFoundException("No transactions found for user with id " + userId));
         return transactions.stream().map(transactionMapper::toDto).toList();
+    }
+
+    @Override
+    public void deleteTransactionById(Long id) throws UserNotFoundException {
+        if (!transactionRepository.existsById(id)) {
+            throw new UserNotFoundException("Transaction with id " + id + " not found");
+        }
+        transactionRepository.deleteById(id);
     }
 }
