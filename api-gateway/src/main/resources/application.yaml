@@ -13,11 +13,21 @@ spring:
       server:
         webmvc:
           routes:
-            - id: todo_route
-              uri: lb://todo-service
+            
+            - id: users_route
+              uri: lb://user-service
               predicates:
                 - Path=/api/v1/users/**
+
+            - id: transactions_route
+              uri: lb://transaction-service
+              predicates:
                 - Path=/api/v1/transactions/**
+
+            - id: categories_route
+              uri: lb://category-service
+              predicates:
+                - Path=/api/v1/categories/**
           default-filters:
             - AddRequsetHeader=X-Correlation-Id, #{T(java.util.UUID).randomUUID()}
             - TokenRelay= keycloak
