@@ -34,6 +34,18 @@ services:
     networks:
       - microservices-net
 
+  category-service:
+    build: ./category-service   
+    container_name: category-service
+    ports:
+      - "8083:8083"
+    environment:
+      - EUREKA_HOST=eureka-server      
+      - SERVER_PORT=8083
+    depends_on:
+      - eureka-server                  
+    networks:
+      - microservices-net
   
   keycloak:
     image: quay.io/keycloak/keycloak:latest 
