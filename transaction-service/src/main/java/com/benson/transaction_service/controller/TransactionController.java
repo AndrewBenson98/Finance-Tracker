@@ -1,6 +1,7 @@
 package com.benson.transaction_service.controller;
 
 import com.benson.transaction_service.models.dto.request.CreateTransactionDTO;
+import com.benson.transaction_service.models.dto.request.UpdateTransactionDTO;
 import com.benson.transaction_service.models.dto.response.TransactionDTO;
 import com.benson.transaction_service.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,14 @@ public class TransactionController {
         return ResponseEntity.ok(transactions);
 
     }
+
+
+    @PutMapping("/transactions/{id}")
+    public ResponseEntity<TransactionDTO> updateTransaction(@RequestBody UpdateTransactionDTO transactionDTO, @PathVariable Long id){
+        TransactionDTO updated = transactionService.updateTransaction(transactionDTO, id);
+        return ResponseEntity.ok(updated);
+    }
+
 
     @DeleteMapping("/transactions/{id}")
     public ResponseEntity<Void> deleteTransactionById(@PathVariable Long id) {

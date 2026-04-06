@@ -3,7 +3,7 @@ package com.benson.transaction_service.models.dto.response;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record TransactionDTO(
 
@@ -12,7 +12,7 @@ public record TransactionDTO(
     String description,
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    LocalDateTime creationDate,
+    LocalDate creationDate,
     Long categoryId,
     Long userId,
     String transactionType
