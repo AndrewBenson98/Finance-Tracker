@@ -13,6 +13,6 @@ public interface TransactionService {
         TransactionDTO createTransaction(CreateTransactionDTO createTransactionDTO);
         List<TransactionDTO> getTransactionsByUserId(Long userId) throws TransactionNotFoundException;
         TransactionDTO updateTransaction(UpdateTransactionDTO transactionDTO, Long id);
-        void deleteTransactionById(Long id) throws UserNotFoundException;
+        void deleteTransactionById(Long id) throws TransactionNotFoundException;
 
 }

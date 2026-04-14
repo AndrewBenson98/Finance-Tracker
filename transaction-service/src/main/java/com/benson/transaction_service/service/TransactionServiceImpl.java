@@ -30,17 +30,12 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public TransactionDTO createTransaction(CreateTransactionDTO createTransactionDTO) {
 
-        System.out.println("DTO Date: " + createTransactionDTO.creationDate()) ;
-//        transactionRepository.findByUserId(createTransactionDTO.userId()).ifPresent(transaction ->
-//        {throw new RuntimeException("User with id " + createTransactionDTO.userId() + " already has a transaction");});
-
         // Map to entity
         Transaction transaction = transactionMapper.toEntity(createTransactionDTO);
         System.out.println(transaction.getCreationDate());
 
         //save to database
         Transaction savedTransaction = transactionRepository.save(transaction);
-        System.out.println("Saved Transaction: "+savedTransaction.getCreationDate());
         return transactionMapper.toDto(savedTransaction);
 
     }
@@ -58,7 +53,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         existing.setAmount(transactionDTO.amount());
         existing.setDescription(transactionDTO.description());
-        existing.setCreationDate(transactionDTO.creationDate().toLocalDate());
+        existing.setCreationDate(transactionDTO.creationDate());
         existing.setCategoryId(transactionDTO.categoryId());
         existing.setUserId(transactionDTO.userId());
         existing.setTransactionType(TransactionType.valueOf(transactionDTO.transactionType()));
@@ -68,9 +63,9 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void deleteTransactionById(Long id) throws UserNotFoundException {
+    public void deleteTransactionById(Long id) throws TransactionNotFoundException {
         if (!transactionRepository.existsById(id)) {
-            throw new UserNotFoundException("Transaction with id " + id + " not found");
+            throw new TransactionNotFoundException("Transaction with id " + id + " not found");
         }
         transactionRepository.deleteById(id);
     }
